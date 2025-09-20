@@ -33,23 +33,25 @@ if __name__ == "__main__":
         if user_input.lower() in ["exit", "quit"]:
             print("Goodbye!")
             break
-        elif user_input.lower() in ["y"]:
+        elif user_input == "y":
             print("We got you")
             print(llm.generate_content("What should I wear on a first date?").text)
             continue
-        elif user_input.lower() in ["n"]:
+        elif user_input == "n":
             print("No worries, how about help with conversation topics? (y/n)")
-            if user_input.lower() in ["y"]:
+            user_input = input("You: ")
+            if user_input.lower() == "y":
                 print("No worries we got you covered")
                 print(llm.generate_content("What are some good conversation topics for a first date?").text)
                 continue
-            elif user_input.lower() in ["n"]:
+            elif user_input == "n":
                 print("Alright, how about help with date ideas? (y/n)")
-                if user_input.lower() in ["y"]:
+                user_input = input("You: ")
+                if user_input == "y":
                     print("No need to worry")
                     print(llm.generate_content("What are some good first date ideas?").text)
                     continue
-                elif user_input.lower() in ["n"]:
+                elif user_input == "n":
                     print("Alright, if you need anything else, just ask!")
                     continue
                
