@@ -35,5 +35,11 @@ if __name__ == "__main__":
             break
         elif user_input.lower() in ["y"]:
             print("We got you")
-        reply = gemini_agent(user_input)
-        print("Gemini:", reply)
+            print(llm.generate_content("What should I wear on a first date?").text)
+            continue
+        elif user_input.lower() in ["n"]:
+            print("No worries, how can we help you?")
+            continue
+        else:
+            reply = gemini_agent(user_input)
+            print("Gemini:", reply)
