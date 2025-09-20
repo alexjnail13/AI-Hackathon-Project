@@ -38,8 +38,21 @@ if __name__ == "__main__":
             print(llm.generate_content("What should I wear on a first date?").text)
             continue
         elif user_input.lower() in ["n"]:
-            print("No worries, how can we help you?")
-            continue
+            print("No worries, how about help with conversation topics? (y/n)")
+            if user_input.lower() in ["y"]:
+                print("No worries we got you covered")
+                print(llm.generate_content("What are some good conversation topics for a first date?").text)
+                continue
+            elif user_input.lower() in ["n"]:
+                print("Alright, how about help with date ideas? (y/n)")
+                if user_input.lower() in ["y"]:
+                    print("No need to worry")
+                    print(llm.generate_content("What are some good first date ideas?").text)
+                    continue
+                elif user_input.lower() in ["n"]:
+                    print("Alright, if you need anything else, just ask!")
+                    continue
+               
         else:
             reply = gemini_agent(user_input)
             print("Gemini:", reply)
