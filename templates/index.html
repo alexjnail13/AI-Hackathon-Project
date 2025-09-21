@@ -38,7 +38,7 @@
         </form>
     {% elif step == "done" %}
         {% if response %}
-            <p style = "color:darkblue; font-size:20px"><strong>AI:</strong> {{ response }}</p>
+            <p style = "color:darkblue; font-size:20px; padding: 15px; border-radius: 10px; margin-top:20px; white-space: pre-wrap; line-height: 1.6"><strong>AI:</strong> {{ response }}</p>
         {% endif %}
         <form method="post">
             <label style = "color:aqua; font-size:20px">Anything else you would like to ask?</label>
