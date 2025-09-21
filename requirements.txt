@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 langchain 
 wikipedia 
 langchain-community 
@@ -10,4 +10,4 @@ duckduckgo-search
 streamlit>=1.30.0
 google-generativeai>=0.8.5
 python-dotenv>=1.0.0
->>>>>>> 4239b7782d1c8382485f890336097afc7eea7d4d
+
