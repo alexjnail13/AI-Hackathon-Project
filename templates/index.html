@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FirstDateAI</title>
+</head>
+<body>
+    <h1>FirstDateAI</h1>
+    <p>Welcome! We're here to help you on your first date.</p>
+    {% if step == "fashion" %}
+        <form method="post">
+            <label>Would you like help with fashion first? (y/n)</label>
+            <input type="text" name="user_input" autofocus>
+            <input type="hidden" name="step" value="fashion">
+            <button type="submit">Submit</button>
+        </form>
+    {% elif step == "conversation" %}
+        <form method="post">
+            <label>No worries, how about help with conversation topics? (y/n)</label>
+            <input type="text" name="user_input" autofocus>
+            <input type="hidden" name="step" value="conversation">
+            <button type="submit">Submit</button>
+        </form>
+    {% elif step == "ideas" %}
+        <form method="post">
+            <label>Alright, how about help with date ideas? (y/n)</label>
+            <input type="text" name="user_input" autofocus>
+            <input type="hidden" name="step" value="ideas">
+            <button type="submit">Submit</button>
+        </form>
+    {% elif step == "done" %}
+        {% if response %}
+            <p><strong>AI:</strong> {{ response }}</p>
+        {% endif %}
+        <form method="post">
+            <label>Anything else you would like to ask?</label>
+            <input type="text" name="user_input" autofocus>
+            <input type="hidden" name="step" value="done">
+            <button type="submit">Ask</button>
+        </form>
+    {% endif %}
+</body>
+</html>
