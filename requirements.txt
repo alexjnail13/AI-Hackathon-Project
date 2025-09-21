@@ -11,6 +11,5 @@ streamlit>=1.30.0
 google-generativeai>=0.8.5
 python-dotenv>=1.0.0
 gunicorn
-pyttsx3>=2.99
-PyAudio>=0.2.14
+
 
