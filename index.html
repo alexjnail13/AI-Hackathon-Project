@@ -635,11 +635,6 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="apiKey">Gemini API Key (Optional)</label>
-                    <input type="password" id="apiKey" placeholder="Enter your Gemini API key for AI features">
-                    <small>Get your free API key from <a href="https://ai.google.dev" target="_blank">Google AI Studio</a>. Without an API key, demo questions will be used.</small>
-                </div>
                 
                 <button class="btn" onclick="startInterview()">
                     <span id="startBtnText">Start Interview</span>
@@ -891,14 +886,13 @@
             const name = document.getElementById('candidateName').value.trim();
             const position = document.getElementById('position').value.trim();
             const interviewType = document.getElementById('interviewType').value;
-            const apiKey = document.getElementById('apiKey').value.trim();
             
             if (!name || !position || !interviewType) {
                 alert('Please fill in all required fields');
                 return;
             }
             
-            candidateData = { name, position, interviewType, apiKey };
+            candidateData = { name, position, interviewType };
             
             // Show loading state
             const startBtn = document.getElementById('startBtnText');
@@ -999,34 +993,62 @@
             const answer = lastResponse ? lastResponse.answer : "";
             const wordCount = answer.split(/\s+/).length;
             
-            let score = 7; // Base score
+            let score = 6; // Base score
             let feedback = "Good response!";
             
-            // Adjust score based on answer quality indicators
-            if (wordCount > 100) score += 1;
-            if (wordCount > 200) score += 0.5;
+            // Enhanced scoring based on answer quality indicators
+            if (wordCount < 20) score -= 1; // Too short
+            if (wordCount > 50) score += 0.5; // Good length
+            if (wordCount > 100) score += 1; // Very good length
+            if (wordCount > 200) score += 0.5; // Excellent length
+            
+            // Content quality indicators
             if (answer.toLowerCase().includes('example') || answer.toLowerCase().includes('for instance')) score += 0.5;
             if (answer.toLowerCase().includes('result') || answer.toLowerCase().includes('outcome')) score += 0.5;
+            if (answer.toLowerCase().includes('learned') || answer.toLowerCase().includes('experience')) score += 0.5;
+            if (answer.toLowerCase().includes('challenge') || answer.toLowerCase().includes('difficult')) score += 0.5;
+            if (answer.toLowerCase().includes('team') || answer.toLowerCase().includes('collaboration')) score += 0.3;
+            if (answer.toLowerCase().includes('leadership') || answer.toLowerCase().includes('manage')) score += 0.3;
+            if (answer.toLowerCase().includes('problem') || answer.toLowerCase().includes('solution')) score += 0.3;
+            if (answer.toLowerCase().includes('improve') || answer.toLowerCase().includes('better')) score += 0.3;
+            
+            // Penalize for very short answers
+            if (wordCount < 10) score = Math.max(score, 3);
             
             // Cap at 10
             score = Math.min(score, 10);
             
-            // Generate contextual feedback
-            const feedbacks = [
-                "Excellent answer! You provided specific examples and demonstrated clear problem-solving skills. Your response shows strong communication abilities.",
-                "Great response! Your answer is well-structured and shows relevant experience. Consider adding more quantifiable results to strengthen your impact.",
-                "Well-structured answer! You followed a logical flow and provided good context. Try to include more specific metrics or outcomes next time.",
-                "Good answer! Your experience comes through clearly. Consider using the STAR method (Situation, Task, Action, Result) for even stronger responses.",
-                "Solid response! You addressed the question effectively. Adding more concrete examples would make your answer even more compelling.",
-                "Nice response! Your enthusiasm and knowledge are evident. Focus on being more specific about your role and contributions.",
-                "Good answer! You demonstrated relevant skills well. Consider elaborating on the impact or results of your actions.",
-                "Well done! Your answer shows good self-awareness. Try to provide more detailed examples to illustrate your points.",
-                "Strong response! You communicated your experience clearly. Adding measurable outcomes would enhance your answer further.",
-                "Effective answer! Your approach to the situation was well-explained. Consider including what you learned from the experience."
-            ];
+            // Generate contextual feedback based on score
+            let feedbackMessage;
+            if (score >= 9) {
+                feedbackMessage = "Outstanding answer! You provided excellent examples, clear structure, and demonstrated strong communication skills. This is exactly what interviewers want to hear.";
+            } else if (score >= 8) {
+                feedbackMessage = "Excellent response! You provided specific examples and showed clear problem-solving skills. Your answer demonstrates strong communication abilities.";
+            } else if (score >= 7) {
+                feedbackMessage = "Great answer! Your response is well-structured and shows relevant experience. Consider adding more quantifiable results to strengthen your impact.";
+            } else if (score >= 6) {
+                feedbackMessage = "Good response! You followed a logical flow and provided good context. Try to include more specific examples and outcomes next time.";
+            } else if (score >= 5) {
+                feedbackMessage = "Decent answer! You addressed the question but could benefit from more specific examples and the STAR method (Situation, Task, Action, Result).";
+            } else if (score >= 4) {
+                feedbackMessage = "Basic response. Consider adding more detail, specific examples, and explaining the impact or results of your actions.";
+            } else {
+                feedbackMessage = "Your answer needs more development. Try to provide specific examples, explain your role clearly, and include measurable outcomes.";
+            }
+            
+            // Add specific suggestions based on content analysis
+            if (wordCount < 30) {
+                feedbackMessage += " Try to elaborate more on your experiences and provide more detail.";
+            }
+            if (!answer.toLowerCase().includes('example') && !answer.toLowerCase().includes('instance')) {
+                feedbackMessage += " Consider adding specific examples to illustrate your points.";
+            }
+            if (!answer.toLowerCase().includes('result') && !answer.toLowerCase().includes('outcome')) {
+                feedbackMessage += " Include the results or outcomes of your actions to strengthen your response.";
+            }
             
             scoreDisplay.textContent = `${score.toFixed(1)}/10`;
-            feedbackText.textContent = feedbacks[Math.floor(Math.random() * feedbacks.length)];
+            feedbackText.textContent = feedbackMessage;
             
             // Show feedback with animation
             feedbackCard.classList.remove('hidden');
@@ -1091,11 +1113,19 @@
             }, 0);
             const avgWordsPerAnswer = answeredQuestions > 0 ? Math.round(totalWords / answeredQuestions) : 0;
             
-            // Generate overall score (demo calculation)
-            let overallScore = 7.5;
+            // Generate overall score based on actual performance
+            let overallScore = 6.0; // Base score
             if (answeredQuestions >= 8) overallScore += 0.5;
             if (avgWordsPerAnswer > 75) overallScore += 0.5;
+            if (avgWordsPerAnswer > 150) overallScore += 0.5;
             if (skippedQuestions === 0) overallScore += 0.5;
+            if (skippedQuestions <= 2) overallScore += 0.3;
+            
+            // Calculate based on response quality
+            const qualityResponses = responses.filter(r => !r.skipped && r.answer.length > 50).length;
+            if (qualityResponses / answeredQuestions > 0.8) overallScore += 0.5;
+            if (qualityResponses / answeredQuestions > 0.6) overallScore += 0.3;
+            
             overallScore = Math.min(overallScore, 10);
             
             // Show results
@@ -1134,8 +1164,12 @@
                             <span class="summary-value">${avgWordsPerAnswer}</span>
                         </div>
                         <div class="summary-item">
-                            <span class="summary-label">Speech Recognition Used:</span>
+                            <span class="summary-label">Speech Recognition:</span>
                             <span class="summary-value">${speechSupported ? 'Available' : 'Not Available'}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">AI Feedback:</span>
+                            <span class="summary-value">Built-in Analysis</span>
                         </div>
                     </div>
                     
@@ -1155,8 +1189,9 @@
                     completedAt: new Date().toISOString(),
                     totalQuestionsAnswered: responses.filter(r => !r.skipped).length,
                     totalQuestionsSkipped: responses.filter(r => r.skipped).length,
-                    overallScore: 8.2, // Demo value
-                    interviewDuration: `${Math.floor(Math.random() * 20) + 15} minutes`
+                    overallScore: overallScore.toFixed(1),
+                    interviewDuration: `${Math.floor(Math.random() * 20) + 15} minutes`,
+                    feedbackSystem: "Built-in AI Analysis"
                 },
                 responses: responses,
                 summary: {
