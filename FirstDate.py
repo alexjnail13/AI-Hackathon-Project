@@ -26,7 +26,7 @@ def gemini_agent(user_input):
     response = llm.generate_content(user_input)
     return response.text
 if __name__ == "__main__":
-    print("Hello! welcome to FirstDateAI we are here to help you on your first date")
+    print("Hello! Welcome to BoilerMatch we are here to help you on your first date")
     print("Would you like help with fashion first? (y/n)")
     while True:
         user_input = input("You: ")
